@@ -11,4 +11,6 @@ func main() {
 	fmt.Println("And I want to merge my changes")
 	fmt.Println("hello my name is alin")
 	fmt.Println("Hello my nombre es Bogdan")
+	fmt.Println("my name is Ioan")
+	fmt.Println("salut lumeee!!!... de la Radu")
 }
