@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 func main() {
+
 	fmt.Println("hello world!")
 	fmt.Println("My name is Claudia")
 	fmt.Println("Razvan Farte was here")
@@ -15,4 +16,6 @@ func main() {
 	fmt.Println("salut lumeee!!!... de la Radu")
 	fmt.Println("Hello my name is Florin!")
 	fmt.Println("Hello, my name is Bogdan!")
+	fmt.Println("Hello my name is Eduard")
+
 }
