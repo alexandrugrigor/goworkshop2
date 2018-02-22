@@ -18,5 +18,5 @@ func main() {
 	fmt.Println("salut!")
 	fmt.Println("Hello, my name is Bogdan!")
 	fmt.Println("Hello my name is Eduard")
-
+	fmt.Println("My name is Maria")
 }
