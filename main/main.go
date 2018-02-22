@@ -14,4 +14,5 @@ func main() {
 	fmt.Println("my name is Ioan")
 	fmt.Println("salut lumeee!!!... de la Radu Dragan")
 	fmt.Println("Hello my name is Florin!")
+	fmt.Println("salut!")
 }
