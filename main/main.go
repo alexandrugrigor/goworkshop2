@@ -13,12 +13,5 @@ func main() {
 	fmt.Println("Hello my nombre es Bogdan")
 	fmt.Println("my name is Ioan")
 	fmt.Println("salut lumeee!!!... de la Radu")
-<<<<<<< a9b05612ef36fef00c3d84e568403183b7b619c9
-=======
-<<<<<<< b8dceba623fbdf118e794309a7f3d9f1946e4af5
->>>>>>> first commit
-=======
-
->>>>>>> print my name
->>>>>>> print my name
+	fmt.Println("Hello my name is Florin!")
 }
