@@ -8,9 +8,10 @@ import (
 )
 
 func main() {
-	model.Authors = importer.ImportAuthors()
+	model.Authors = importer.ImportAuthors("importer/authors.json")
 	fmt.Printf("Imported authors are: %s\n", model.Authors)
-	model.Books = importer.ImportBooks()
+	model.Books = importer.ImportBooks("importer/books.json")
 	fmt.Printf("Imported books are: %s\n", model.Books)
 	web.StartServer()
 }
+
