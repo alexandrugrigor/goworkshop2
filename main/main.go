@@ -1,22 +1,63 @@
 package main
 
-import "fmt"
+import (
+	"io/ioutil"
+	"fmt"
+	"encoding/json"
+)
+
+type Talker interface {
+	CanTalk() bool
+}
+
+type Animal struct {
+	NoLegS int    `json:"-"`
+	NoLegs int    `json:"noLegs"`
+	Name   string `json:"name"`
+}
+
+func (a Animal) CanTalk() bool {
+	return false
+}
+
+func (a Animal) String() string {
+	return fmt.Sprintf("Animal{NoLegs=%d, Name=%s, NoLegS=%d}", a.NoLegs, a.Name, a.NoLegS)
+}
 
 func main() {
+	var creature Talker
+	creature = Animal{
+		NoLegs: 4,
+		Name:   "Pig",
+	}
+	fmt.Println(creature)
 
-	fmt.Println("hello world!")
-	fmt.Println("My name is Claudia")
-	fmt.Println("Razvan Farte was here")
-	fmt.Println("my name is Ioan")
-	fmt.Println("Hello my name is Alex")
-	fmt.Println("And I want to merge my changes")
-	fmt.Println("hello my name is alin")
-	fmt.Println("Hello my nombre es Bogdan")
-	fmt.Println("my name is Ioan")
-	fmt.Println("salut lumeee!!!... de la Radu Dragan")
-	fmt.Println("Hello my name is Florin!")
-	fmt.Println("salut!")
-	fmt.Println("Hello, my name is Bogdan!")
-	fmt.Println("Hello my name is Eduard")
-	fmt.Println("Hello, my name is Andrei")
+	//reading the file
+	fileContent, err := ioutil.ReadFile("main/animals.json")
+	if err != nil {
+		fmt.Println("Unable to open the file")
+		panic(err)
+	}
+
+	fmt.Println("The content of animals.json is:")
+	fmt.Println(string(fileContent))
+
+	//de-serialization
+	var animals []Animal
+	err = json.Unmarshal(fileContent, &animals)
+	if err != nil {
+		fmt.Println("Unable to de-serialize the animals")
+		panic(err)
+	}
+
+	//check the values de-serialized
+	fmt.Println("The animals are:")
+	fmt.Println(animals)
+
+	if serializedAnimals, err := json.Marshal(animals); err != nil {
+		fmt.Println("Unable to serialize the animals")
+		panic(err)
+	} else {
+		fmt.Println(string(serializedAnimals))
+	}
 }

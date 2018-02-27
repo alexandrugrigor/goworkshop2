@@ -19,7 +19,7 @@ type AuthorDto struct {
 }
 
 //Books - the list of available books
-var Books = []BookDto{}
+var Books []BookDto
 
 // Authors - the list of available authors
-var Authors = []AuthorDto{}
+var Authors []AuthorDto
