@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"goworkshop/model"
 	"goworkshop/importer"
+	"goworkshop/model"
+	"goworkshop/web"
 )
 
 func main() {
-	model.Authors = importer.ImportAuthors("importer/authors.json")
+	model.Authors = importer.ImportAuthors()
 	fmt.Printf("Imported authors are: %s\n", model.Authors)
-
-	model.Books= importer.ImportBooks("importer/books.json")
+	model.Books = importer.ImportBooks()
 	fmt.Printf("Imported books are: %s\n", model.Books)
+	web.StartServer()
 }
