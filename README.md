@@ -53,6 +53,13 @@
 1. print all authors to the STDOUT
 1. print all books to the STDOUT
 ### 5. start a web server, listening on a configured port
+1. create web package
+1. create webserver.go
+1. import net/http
+1. read listening port from API_PORT environment variable, defaulting to 8000
+1. define a http.Handler function that will handle the incoming HTTP requests to the web server
+1. launch the web server on API_PORT port by calling **ListenAndServe**
+1. if the web server returns an error, exit the application
 ### 6. writing a simple REST endpoint
 ### 7. implement all REST endpoints with data loaded from files
 
@@ -62,7 +69,7 @@
 ### 10. add persistence services to retrieve data from db
 ### 11. switch from loading data from db instead of files
 
-#Part 3 - Add error handling and logging, improve performance with Go routines
+# Part 3 - Add error handling and logging, improve performance with Go routines
 ### 12. add error handling
 ### 13. add logging support
 ### 14. create a configuration service for the application
