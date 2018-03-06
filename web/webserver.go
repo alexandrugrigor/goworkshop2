@@ -17,18 +17,24 @@ func StartServer() {
 		router.Handle(route.Pattern, log(route.HandlerFunc)).Methods(route.Method)
 	}
 	var port = getPort()
+	fmt.Println("Starting server on port:" + port)
 	if err := http.ListenAndServe(":"+port, router); err != nil {
 		panic(err)
 	}
 }
 
-func log(h http.Handler) http.Handler {
+func log(routeFunc RouteFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Request to: "+r.URL.Path)
+		fmt.Println("Request to: " + r.URL.Path)
 		start := time.Now().UnixNano()
-		h.ServeHTTP(w, r) // call original
+		err := routeFunc(w, r) // call original
+		//handle the errors
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			fmt.Errorf("error occurred while processing the request:%v", err)
+		}
 		end := time.Now().UnixNano()
-		fmt.Printf("Request took: %d nano\n",(end - start))
+		fmt.Printf("Request took: %d nano\n", (end - start))
 	})
 }
 

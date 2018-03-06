@@ -17,8 +17,10 @@ type Route struct {
 	Pattern string
 
 	//the method that the endpoint should call
-	HandlerFunc http.HandlerFunc
+	HandlerFunc RouteFunc
 }
+
+type RouteFunc func(http.ResponseWriter, *http.Request) error
 
 type Routes []Route
 

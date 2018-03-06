@@ -9,7 +9,7 @@ var Books BooksList
 
 //Book - The DTO used to access books
 type Book struct {
-	UUID        string `json:"uuid" gorm:"primary_key"`
+	Entity
 	Title       string `json:"title"`
 	NoPages     int    `json:"noPages"`
 	ReleaseDate string `json:"releaseDate"`

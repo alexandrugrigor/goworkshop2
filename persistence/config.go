@@ -11,14 +11,14 @@ const (
 	UNIQUE_BOOK_TITLE_CONSTRAINT = "title_unique"
 )
 
-func InitDB() (*gorm.DB, error) {
+func InitDB() (error) {
 
-	DBInstance, err := gorm.Open("postgres", "host=localhost port=5432 user=dbadmin " +
+	DBInstance, err := gorm.Open("postgres", "host=localhost port=5432 user=dbadmin "+
 		"password=dbadmin dbname=workshop_db sslmode=disable")
 
 	if err != nil {
 		fmt.Printf("Error while aquiring db connection: %s", err)
-		return nil, err
+		return err
 	}
 	DBInstance.DB().SetMaxOpenConns(20)
 
@@ -39,5 +39,9 @@ func InitDB() (*gorm.DB, error) {
 	//add uniqueness on book.title column
 	DBInstance.Table("book").AddUniqueIndex(UNIQUE_BOOK_TITLE_CONSTRAINT, "title")
 
-	return DBInstance, nil
+	// init the dataStore
+	Store = &GormDataStore {
+		DBInstance: DBInstance,
+	}
+	return nil
 }

@@ -5,9 +5,12 @@ import "fmt"
 // Authors - the list of available authors
 var Authors AuthorsList
 
+type Entity struct{
+	UUID      string `json:"uuid" gorm:"primary_key"`
+}
 //Author - The DTO used to access authors
 type Author struct {
-	UUID      string `json:"uuid" gorm:"primary_key"`
+	Entity
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Birthday  string `json:"birthday"`
@@ -68,6 +71,6 @@ func (a *AuthorsList) Get(authorUUID string) (Author, error) {
 }
 
 //Adds the given author into the list
-func (a *AuthorsList) Add(author Author){
+func (a *AuthorsList) Add(author Author) {
 	*a = append(*a, author)
 }

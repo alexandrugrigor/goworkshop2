@@ -4,59 +4,69 @@ import (
 	"net/http"
 	"goworkshop/model"
 	"github.com/gorilla/mux"
-	"fmt"
 	"io/ioutil"
 	"encoding/json"
+	"goworkshop/persistence"
 )
 
-func GetAllAuthors(w http.ResponseWriter, r *http.Request) {
-	WriteJson(w, model.Authors)
+func GetAllAuthors(w http.ResponseWriter, _ *http.Request) error {
+	authors, err := persistence.Store.GetAuthors()
+	if err != nil {
+		return err
+	}
+	WriteJson(w, authors)
+	return nil
 }
 
-func GetAuthorByUUID(w http.ResponseWriter, r *http.Request) {
+func GetAuthorByUUID(w http.ResponseWriter, r *http.Request) error {
 	authorUUID := mux.Vars(r)["uuid"]
-	author, err := model.Authors.Get(authorUUID)
-	if err != nil {
-		fmt.Fprintf(w, "Error: %s", err)
+	if author, err := persistence.Store.GetAuthor(authorUUID); err != nil {
+		return err
 	} else {
 		WriteJson(w, author)
+		return nil
 	}
 }
 
-func DeleteAuthorByUUID(w http.ResponseWriter, r *http.Request) {
+func DeleteAuthorByUUID(w http.ResponseWriter, r *http.Request) error {
 	var authorUUID = mux.Vars(r)["uuid"]
-	err := model.Authors.Delete(authorUUID)
-	if err != nil {
-		fmt.Fprintf(w, "Failed to delete author: %s", err)
+	if err := persistence.Store.DeleteAuthor(authorUUID); err != nil {
+		return err
 	} else {
-		WriteJson(w, model.Authors)
+		WriteJson(w, struct{ Message string }{Message: "Deleted"})
+		return nil
 	}
 }
 
-func AddAuthor(w http.ResponseWriter, r *http.Request) {
+func AddAuthor(w http.ResponseWriter, r *http.Request) error {
 	var author model.Author
-	bytes, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(bytes, &author)
+	bytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Fprintf(w, "Failed to create author: %s", err)
+		return err
+	}
+	if err := json.Unmarshal(bytes, &author); err != nil {
+		return err
 	} else {
-		model.Authors.Add(author)
+		persistence.Store.CreateAuthor(&author)
+		WriteJson(w, author)
+		return nil
+	}
+}
+
+func UpdateAuthor(w http.ResponseWriter, r *http.Request) error {
+	var author model.Author
+	bytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(bytes, &author); err != nil {
+		return err
+	}
+
+	if err := persistence.Store.UpdateAuthor(&author); err != nil {
+		return err
+	} else {
 		WriteJson(w, author)
 	}
-}
-
-func UpdateAuthor(w http.ResponseWriter, r *http.Request) {
-	var author model.Author
-	bytes, _ := ioutil.ReadAll(r.Body)
-	err := json.Unmarshal(bytes, &author)
-	if err != nil {
-		fmt.Fprintf(w, "Failed to update author: %s", err)
-		return
-	}
-	author, err = model.Authors.Update(author)
-	if err != nil {
-		fmt.Fprintf(w, "Failed to update author: %s", err)
-		return
-	}
-	WriteJson(w, author)
+	return nil
 }
