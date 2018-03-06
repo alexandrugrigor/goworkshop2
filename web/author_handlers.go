@@ -34,7 +34,7 @@ func DeleteAuthorByUUID(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddAuthor(w http.ResponseWriter, r *http.Request) {
-	var author model.AuthorDto
+	var author model.Author
 	bytes, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(bytes, &author)
 	if err != nil {
@@ -46,7 +46,7 @@ func AddAuthor(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateAuthor(w http.ResponseWriter, r *http.Request) {
-	var author model.AuthorDto
+	var author model.Author
 	bytes, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(bytes, &author)
 	if err != nil {
