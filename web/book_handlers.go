@@ -2,15 +2,13 @@ package web
 
 import (
 	"net/http"
-	"github.com/gorilla/mux"
 	"goworkshop/model"
 	"io/ioutil"
 	"encoding/json"
-	"goworkshop/persistence"
 )
 
 //Demonstrates the basic functionality of private and public modifiers in GO
-func Index(w http.ResponseWriter, r *http.Request) error {
+func (server *RestServer) Index(w http.ResponseWriter, r *http.Request) error {
 	helloWorkshop := struct {
 		Message        string `json:"message"`
 		privateMessage string `json:"privateMessage"`
@@ -24,8 +22,8 @@ func Index(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func GetAllBooks(w http.ResponseWriter, _ *http.Request) error {
-	books, err := persistence.Store.GetBooks()
+func (server *RestServer) GetAllBooks(w http.ResponseWriter, _ *http.Request) error {
+	books, err := (*server.Store).GetBooks()
 	if err != nil {
 		return err
 	}
@@ -33,9 +31,9 @@ func GetAllBooks(w http.ResponseWriter, _ *http.Request) error {
 	return nil
 }
 
-func GetBookByUUID(w http.ResponseWriter, r *http.Request) error {
-	bookUUID := mux.Vars(r)["uuid"]
-	if book, err := persistence.Store.GetBook(bookUUID); err != nil {
+func (server *RestServer) GetBookByUUID(w http.ResponseWriter, r *http.Request) error {
+	bookUUID := ExtractUuid(r)
+	if book, err := (*server.Store).GetBook(bookUUID); err != nil {
 		return err
 	} else {
 		WriteJson(w, book)
@@ -43,9 +41,9 @@ func GetBookByUUID(w http.ResponseWriter, r *http.Request) error {
 	}
 }
 
-func DeleteBookByUUID(w http.ResponseWriter, r *http.Request) error {
-	var bookUUID = mux.Vars(r)["uuid"]
-	if err := persistence.Store.DeleteBook(bookUUID); err != nil {
+func (server *RestServer) DeleteBookByUUID(w http.ResponseWriter, r *http.Request) error {
+	bookUUID := ExtractUuid(r)
+	if err := (*server.Store).DeleteBook(bookUUID); err != nil {
 		return err
 	} else {
 		WriteJson(w, struct{ Message string }{Message: "Deleted"})
@@ -53,7 +51,7 @@ func DeleteBookByUUID(w http.ResponseWriter, r *http.Request) error {
 	}
 }
 
-func AddBook(w http.ResponseWriter, r *http.Request) error {
+func (server *RestServer) AddBook(w http.ResponseWriter, r *http.Request) error {
 	var book model.Book
 	bytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -61,15 +59,17 @@ func AddBook(w http.ResponseWriter, r *http.Request) error {
 	}
 	if err := json.Unmarshal(bytes, &book); err != nil {
 		return err
+	} else if err := (*server.Store).CreateBook(&book); err != nil {
+		return err
 	} else {
-		persistence.Store.CreateBook(&book)
 		WriteJson(w, book)
 		return nil
 	}
 }
 
-func UpdateBook(w http.ResponseWriter, r *http.Request) error {
+func (server *RestServer) UpdateBook(w http.ResponseWriter, r *http.Request) error {
 	var book model.Book
+	bookUUID := ExtractUuid(r)
 	bytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	if err := persistence.Store.UpdateBook(&book); err != nil {
+	if err := (*server.Store).UpdateBook(bookUUID, &book); err != nil {
 		return err
 	} else {
 		WriteJson(w, book)

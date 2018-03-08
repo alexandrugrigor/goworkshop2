@@ -2,23 +2,28 @@ package web
 
 import (
 	"net/http"
-	"os"
 	"github.com/gorilla/mux"
 	"fmt"
 	"time"
+	"goworkshop/persistence"
 )
 
-const API_PORT_NAME = "API_PORT"
-const API_PORT_VALUE = "8000"
+type RestServer struct {
+	Port   int
+	routes Routes
+	router *mux.Router
+	Store *persistence.DataStore
+}
 
-func StartServer() {
-	router := mux.NewRouter()
-	for _, route := range routes {
-		router.Handle(route.Pattern, log(route.HandlerFunc)).Methods(route.Method)
+func (server *RestServer) StartServer() {
+	server.initRoutes()
+	server.router = mux.NewRouter()
+	for _, route := range server.routes {
+		server.router.Handle(route.Pattern, log(route.HandlerFunc)).Methods(route.Method)
 	}
-	var port = getPort()
-	fmt.Println("Starting server on port:" + port)
-	if err := http.ListenAndServe(":"+port, router); err != nil {
+
+	fmt.Printf("Starting server on port: %d", server.Port)
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", server.Port), server.router); err != nil {
 		panic(err)
 	}
 }
@@ -34,15 +39,6 @@ func log(routeFunc RouteFunc) http.Handler {
 			fmt.Errorf("error occurred while processing the request:%v", err)
 		}
 		end := time.Now().UnixNano()
-		fmt.Printf("Request took: %d nano\n", (end - start))
+		fmt.Printf("Request took: %d nano\n", end-start)
 	})
-}
-
-func getPort() string {
-	var port = os.Getenv(API_PORT_NAME)
-	if port != "" {
-		return port
-	} else {
-		return API_PORT_VALUE
-	}
 }

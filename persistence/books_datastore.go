@@ -6,7 +6,16 @@ import (
 )
 
 func (store *GormDataStore) CreateBook(book *model.Book) error {
-	return store.DBInstance.Create(&book).Error
+	var err error
+	if book.Author, err = store.GetAuthor(book.Author.UUID); err != nil {
+		return err
+	} else {
+		//check if the uuid is empty and generate it if necessary
+		if err := book.CheckUuid(); err != nil{
+			return err
+		}
+		return store.DBInstance.Create(&book).Error
+	}
 }
 
 func (store *GormDataStore) GetBook(uuid string) (model.Book, error) {
@@ -41,8 +50,17 @@ func (store *GormDataStore) DeleteBook(uuid string) error {
 	return nil
 }
 
-func (store *GormDataStore) UpdateBook(book *model.Book) error {
-	return store.DBInstance.Save(&book).Error
+func (store *GormDataStore) UpdateBook(uuid string, book *model.Book) error {
+	if oldBook, err := store.GetBook(uuid); err != nil {
+		return err
+	} else {
+		book.Id = oldBook.Id
+		//check if the uuid is empty and generate it if necessary
+		if err := book.CheckUuid(); err != nil{
+			return err
+		}
+		return store.DBInstance.Save(&book).Error
+	}
 }
 
 //creates the GORM where clause used to identify a book by uuid

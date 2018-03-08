@@ -24,63 +24,66 @@ type RouteFunc func(http.ResponseWriter, *http.Request) error
 
 type Routes []Route
 
-var routes = Routes{
-	//book_handlers
-	Route{
-		Method:      "GET",
-		Pattern:     "/",
-		HandlerFunc: Index,
-	},
-	Route{
-		Method:      "GET",
-		Pattern:     booksBaseUrl,
-		HandlerFunc: GetAllBooks,
-	},
-	Route{
-		Method:      "POST",
-		Pattern:     booksBaseUrl,
-		HandlerFunc: AddBook,
-	},
-	Route{
-		Method:      "GET",
-		Pattern:     bookByUuidUrl,
-		HandlerFunc: GetBookByUUID,
-	},
-	Route{
-		Method:      "DELETE",
-		Pattern:     bookByUuidUrl,
-		HandlerFunc: DeleteBookByUUID,
-	},
-	Route{
-		Method:      "PUT",
-		Pattern:     bookByUuidUrl,
-		HandlerFunc: UpdateBook,
-	},
+func (server *RestServer) initRoutes(){
+	server.routes = Routes{
+		//book_handlers
+		Route{
+			Method:      "GET",
+			Pattern:     "/",
+			HandlerFunc: server.Index,
+		},
+		Route{
+			Method:      "GET",
+			Pattern:     booksBaseUrl,
+			HandlerFunc: server.GetAllBooks,
+		},
+		Route{
+			Method:      "POST",
+			Pattern:     booksBaseUrl,
+			HandlerFunc: server.AddBook,
+		},
+		Route{
+			Method:      "GET",
+			Pattern:     bookByUuidUrl,
+			HandlerFunc: server.GetBookByUUID,
+		},
+		Route{
+			Method:      "DELETE",
+			Pattern:     bookByUuidUrl,
+			HandlerFunc: server.DeleteBookByUUID,
+		},
+		Route{
+			Method:      "PUT",
+			Pattern:     bookByUuidUrl,
+			HandlerFunc: server.UpdateBook,
+		},
 
-	//author_handlers
-	Route{
-		Method:      "GET",
-		Pattern:     authorBaseUrl,
-		HandlerFunc: GetAllAuthors,
-	},
-	Route{
-		Method:      "POST",
-		Pattern:     authorBaseUrl,
-		HandlerFunc: AddAuthor,
-	},
-	Route{
-		Method:      "GET",
-		Pattern:     authorByUuidUrl,
-		HandlerFunc: GetAuthorByUUID,
-	},
-	Route{
-		Method:      "DELETE",
-		Pattern:     authorByUuidUrl,
-		HandlerFunc: DeleteAuthorByUUID,
-	},
-	Route{
-		Method:      "PUT",
-		Pattern:     authorByUuidUrl,
-		HandlerFunc: UpdateAuthor,
-	},
+		//author_handlers
+		Route{
+			Method:      "GET",
+			Pattern:     authorBaseUrl,
+			HandlerFunc: server.GetAllAuthors,
+		},
+		Route{
+			Method:      "POST",
+			Pattern:     authorBaseUrl,
+			HandlerFunc: server.AddAuthor,
+		},
+		Route{
+			Method:      "GET",
+			Pattern:     authorByUuidUrl,
+			HandlerFunc: server.GetAuthorByUUID,
+		},
+		Route{
+			Method:      "DELETE",
+			Pattern:     authorByUuidUrl,
+			HandlerFunc: server.DeleteAuthorByUUID,
+		},
+		Route{
+			Method:      "PUT",
+			Pattern:     authorByUuidUrl,
+			HandlerFunc: server.UpdateAuthor,
+		},
+	}
 }
+

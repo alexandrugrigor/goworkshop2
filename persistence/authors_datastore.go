@@ -12,6 +12,10 @@ func (store *GormDataStore) GetAuthor(uuid string) (model.Author, error) {
 }
 
 func (store *GormDataStore) CreateAuthor(author *model.Author) error {
+	//check if the uuid is empty and generate it if necessary
+	if err := author.CheckUuid(); err != nil{
+		return err
+	}
 	return store.DBInstance.Create(&author).Error
 }
 
@@ -40,8 +44,17 @@ func (store *GormDataStore) DeleteAuthor(uuid string) error {
 	return nil
 }
 
-func (store *GormDataStore) UpdateAuthor(author *model.Author) error {
-	return store.DBInstance.Save(&author).Error
+func (store *GormDataStore) UpdateAuthor(uuid string, author *model.Author) error {
+	//check if the uuid is empty and generate it if necessary
+	if err := author.CheckUuid(); err != nil{
+		return err
+	}
+	if oldAuthor, err := store.GetAuthor(uuid); err != nil {
+		return err
+	}else{
+		author.Id = oldAuthor.Id
+		return store.DBInstance.Save(&author).Error
+	}
 }
 
 //creates the GORM where clause used to identify a book by uuid

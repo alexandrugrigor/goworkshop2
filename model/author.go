@@ -1,13 +1,27 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/satori/go.uuid"
+)
 
-// Authors - the list of available authors
-var Authors AuthorsList
-
-type Entity struct{
-	UUID      string `json:"uuid" gorm:"primary_key"`
+type Entity struct {
+	Id   int    `json:"-" gorm:"primary_key"`
+	UUID string `json:"uuid"`
 }
+
+
+func (entity *Entity) CheckUuid() error {
+	if len(entity.UUID) == 0 {
+		generatedUuid, err := uuid.NewV4()
+		if err != nil {
+			return err
+		}
+		entity.UUID = generatedUuid.String()
+	}
+	return nil
+}
+
 //Author - The DTO used to access authors
 type Author struct {
 	Entity

@@ -1,11 +1,6 @@
 package model
 
-import (
-	"fmt"
-)
-
-//Books - the list of available books
-var Books BooksList
+import "fmt"
 
 //Book - The DTO used to access books
 type Book struct {
@@ -13,8 +8,8 @@ type Book struct {
 	Title       string `json:"title"`
 	NoPages     int    `json:"noPages"`
 	ReleaseDate string `json:"releaseDate"`
-	Author      Author `json:"author" gorm:"foreignkey:AuthorUUID"`
-	AuthorUUID  string `json:"-"`
+	Author      Author `json:"author" gorm:"foreignkey:AuthorId"`
+	AuthorId    int    `json:"-"`
 }
 
 func (book Book) String() string {
